@@ -1,0 +1,15 @@
+[Unit]
+Description=Keyboard brightness service
+After=dbus.service
+StartLimitIntervalSec=30
+
+[Service]
+Type=forking
+Restart=always
+RestartSec=1
+Environment=XAUTHORITY=/home/YOUR_USER/.Xauthority
+ExecStart=/usr/bin/python3 /home/YOUR_USER/PKBrightness/pkbrightness.py --config /home/YOUR_USER/.config/pkb/pkg.conf
+PIDFile=/home/YOUR_USER/.config/pkb/pkb.pid
+
+[Install]
+WantedBy=multi-user.target
