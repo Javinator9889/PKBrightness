@@ -1,0 +1,5 @@
+daemonize~=2.5.0
+
+pynput~=1.7.1
+
+PyGObject~=3.38.0
