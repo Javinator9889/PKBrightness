@@ -168,7 +168,6 @@ if __name__ == '__main__':
                         required=False)
     args = parser.parse_args()
     config = load_config(args.config)
-    main(config)
     daemon = Daemonize(app='pkbrightness',
                        pid=config.pid_file,
                        action=lambda: main(config))
