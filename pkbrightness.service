@@ -7,9 +7,8 @@ StartLimitIntervalSec=30
 Type=forking
 Restart=always
 RestartSec=1
-User=YOUR_USER
-Group=YOUR_USER
-ExecStart=/usr/bin/python3 /home/YOUR_USER/PKBrightness/pkbrightness.py
+Environment=XAUTHORITY=/home/YOUR_USER/.Xauthority
+ExecStart=/usr/bin/python3 /home/YOUR_USER/PKBrightness/pkbrightness.py --config /home/YOUR_USER/.config/pkb/pkg.conf
 PIDFile=/home/YOUR_USER/.config/pkb/pkb.pid
 
 [Install]
