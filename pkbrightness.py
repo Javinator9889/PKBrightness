@@ -126,14 +126,14 @@ def load_config(
             'on click': True,
             'on scroll': True
         }
-        config['Keyboard options'] = {'dim time': 20}
+        config['Keyboard'] = {'dim time': 20}
 
         with open(filename, 'w') as configfile:
             config.write(configfile)
 
     config.read(filename, encoding='utf-8')
     pid_file = config['System']['pid file']
-    dim_time = config.getint('Keyboard options', 'dim time')
+    dim_time = config.getint('Keyboard', 'dim time')
     mouse_interactions = MouseInteractionOptions(
         config['Mouse.Interactions'].getboolean('on move'),
         config['Mouse.Interactions'].getboolean('on click'),

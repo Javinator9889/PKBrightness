@@ -117,6 +117,40 @@ reload the SystemD daemon:
 systemctl --user daemon-reload
 ```
 
+## Performance and options
+Currently, there are several options available at `~/.config/pkb/pkb.conf`:
+```editorconfig
+[System]
+pid file = /home/YOUR_USER/.config/pkb/pkb.pid
+
+[Mouse.Interactions]
+on move = False
+on click = True
+on scroll = True
+
+[Keyboard]
+dim time = 20
+```
+
+Those options allow configuring how the system will react when an input
+event is received.
+
+As you can observe, the system does not react when the mouse is moved. This
+is because mouse move events are a lot and can cause system instability
+alongside high CPU usage, but you can enable them at the configuration.
+
+By default, the system reacts to every keyboard event (as there are usually
+fewer events than the mouse's ones) and click and scroll events produced
+by the mouse.
+
+This way, CPU usage is set to minimum and does not disturb the user while
+doing something.
+
+At the other hand, the `pid file` is customizable, and the `dim time` in
+seconds. The first one sets when the PID file is going to be stored
+(so SystemD can check if the service is still alive) and the second one
+the amount of time, in seconds, to wait until the keyboard is dimmed.
+
 ## License
 ```
                                 PKBrightness
