@@ -27,15 +27,22 @@ from pynput import mouse, keyboard
 from typing import Union
 from threading import Lock, Timer
 
-
 # Init DBus main loop for signal handling
 DBusGMainLoop(set_as_default=True)
+
+
+@dataclass
+class MouseInteractionOptions:
+    on_move: bool
+    on_click: bool
+    on_scroll: bool
 
 
 @dataclass
 class Config:
     pid_file: str
     dim_time: int
+    mouse_interactions: MouseInteractionOptions
 
 
 class InteractionHandler:
@@ -70,10 +77,19 @@ class InteractionHandler:
             self._update_timeout()
 
     def setup_listeners(self):
+        move_listener = self.on_interaction \
+            if self.config.mouse_interactions.on_move \
+            else None
+        click_listener = self.on_interaction \
+            if self.config.mouse_interactions.on_click \
+            else None
+        scroll_listener = self.on_interaction \
+            if self.config.mouse_interactions.on_scroll \
+            else None
         self.mouse_listener = mouse.Listener(
-            on_move=self.on_interaction,
-            on_click=self.on_interaction,
-            on_scroll=self.on_interaction
+            on_move=move_listener,
+            on_click=click_listener,
+            on_scroll=scroll_listener
         )
         self.kbd_listener = keyboard.Listener(
             on_press=self.on_interaction,
@@ -101,9 +117,14 @@ def load_config(
     config = configparser.ConfigParser(allow_no_value=False)
 
     if not os.path.exists(filename):
-        os.makedirs(os.path.dirname(filename))
+        os.makedirs(os.path.dirname(filename), exist_ok=True)
         config['System'] = {
-            'pid file': os.path.expanduser('~/.config/pkb/pkb.pid')
+            'pid file': os.path.expanduser('~/.config/pkb/pkb.pid'),
+        }
+        config['Mouse.Interactions'] = {
+            'on move': False,
+            'on click': True,
+            'on scroll': True
         }
         config['Keyboard options'] = {'dim time': 20}
 
@@ -113,8 +134,13 @@ def load_config(
     config.read(filename, encoding='utf-8')
     pid_file = config['System']['pid file']
     dim_time = config.getint('Keyboard options', 'dim time')
+    mouse_interactions = MouseInteractionOptions(
+        config['Mouse.Interactions'].getboolean('on move'),
+        config['Mouse.Interactions'].getboolean('on click'),
+        config['Mouse.Interactions'].getboolean('on scroll')
+    )
 
-    return Config(pid_file, dim_time)
+    return Config(pid_file, dim_time, mouse_interactions)
 
 
 def main(exec_config):
@@ -142,6 +168,7 @@ if __name__ == '__main__':
                         required=False)
     args = parser.parse_args()
     config = load_config(args.config)
+    main(config)
     daemon = Daemonize(app='pkbrightness',
                        pid=config.pid_file,
                        action=lambda: main(config))
