@@ -1,7 +1,6 @@
 [Unit]
 Description=Keyboard brightness service
 Requires=dbus.socket
-Wants=xorg.target
 After=syslog.target
 
 [Service]
@@ -20,4 +19,4 @@ StandardError=syslog
 SyslogIdentifier=pkbrightnessd
 
 [Install]
-WantedBy=multi-user.target
+WantedBy=default.target
